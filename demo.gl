@@ -1,0 +1,8 @@
+tag main 
+push 1 
+push 5 
+add 
+push 2 
+mul 
+print
+
