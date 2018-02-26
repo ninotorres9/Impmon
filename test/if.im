@@ -1,8 +1,6 @@
 int main(){
     int number = 50;
-    if(number > 200){
-        print 20;
-    }else{
+    if(number > 20){
         print 250;
     }
 }

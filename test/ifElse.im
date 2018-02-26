@@ -1,0 +1,8 @@
+int main(){
+    int number = 50;
+    if(number != 50){
+        print 50;
+    }else{
+        print 900;
+    }
+}

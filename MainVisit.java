@@ -78,15 +78,25 @@ public class MainVisit {
 
 		@Override public String visitIf_stmt(ImpmonParser.If_stmtContext ctx) {
 			// return 
+			
 			String cond = visit(ctx.expr());
-			return cond +
-				"jz @ELSE" + NEWLINE +
-				"tag @IF" + NEWLINE +
-				visit(ctx.stmt(0)) + 
-				"jmp @ENDIF" + NEWLINE +
-				"tag @ELSE" + NEWLINE +
-				visit(ctx.stmt(1)) +
-				"tag @ENDIF" + NEWLINE;
+
+			if(ctx.stmt().size() == 1){
+				return cond +
+					"jz @ENDIF" + NEWLINE +
+					"tag @IF" + NEWLINE +
+					visit(ctx.stmt(0)) + 
+					"tag @ENDIF" + NEWLINE;
+			}else{
+				return cond +
+					"jz @ELSE" + NEWLINE +
+					"tag @IF" + NEWLINE +
+					visit(ctx.stmt(0)) + 
+					"jmp @ENDIF" + NEWLINE +
+					"tag @ELSE" + NEWLINE +
+					visit(ctx.stmt(1)) +
+					"tag @ENDIF" + NEWLINE;
+			}
 		}
 
 		@Override public String visitAssign(ImpmonParser.AssignContext ctx) {
