@@ -38,6 +38,8 @@ class TestImpmon(unittest.TestCase):
     def test_addAssign(self):
         self.assertEqual("35", self.compile("addAssign").replace("\n", ""))
 
+    def test_multAssign(self):
+        self.assertEqual("2", self.compile("multAssign").replace("\n", ""))
 
 if __name__ == '__main__':
     unittest.main()

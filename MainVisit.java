@@ -93,6 +93,33 @@ public class MainVisit {
 				"assign " + "%" + name + NEWLINE;
 		}
 
+		@Override public String visitSubAssign(ImpmonParser.SubAssignContext ctx){
+			String lhs = visit(ctx.term());
+			String rhs = visit(ctx.expr());
+			String name = ctx.term().getText();
+			return 
+				lhs + rhs + "sub" + NEWLINE +
+				"assign " + "%" + name + NEWLINE;
+		}
+
+		@Override public String visitMulAssign(ImpmonParser.MulAssignContext ctx){
+			String lhs = visit(ctx.term());
+			String rhs = visit(ctx.expr());
+			String name = ctx.term().getText();
+			return 
+				lhs + rhs + "mul" + NEWLINE +
+				"assign " + "%" + name + NEWLINE;
+		}
+
+		@Override public String visitDivAssign(ImpmonParser.DivAssignContext ctx){
+			String lhs = visit(ctx.term());
+			String rhs = visit(ctx.expr());
+			String name = ctx.term().getText();
+			return 
+				lhs + rhs + "div" + NEWLINE +
+				"assign " + "%" + name + NEWLINE;
+		}
+
 		@Override public String visitMul(ImpmonParser.MulContext ctx){
 			return visitBinary(ctx.factor(), "mul");
 		}
