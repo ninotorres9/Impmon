@@ -95,11 +95,11 @@ print_stmt
 // expr
 expr
     : term '=' expr                 #assign
-    | term '+=' expr                #add_assign
-    | term '-=' expr                #sub_assign
-    | term '*=' expr                #mul_assign
-    | term '/=' expr                #div_assign
-    | factor                        #to_factor
+    | term '+=' expr                #addAssign
+    | term '-=' expr                #subAssign
+    | term '*=' expr                #mulAssign
+    | term '/=' expr                #divAssign
+    | factor                        #toFactor
     ;
 
 factor
@@ -115,7 +115,7 @@ factor
     | factor '!=' factor            #neq
     | factor '&&' factor            #and
     | factor '||' factor            #or  
-    | term                          #to_term
+    | term                          #toTerm
     ;
 
 term 
@@ -125,8 +125,8 @@ term
     | '(' expr ')'                  #par
     | term '++'                     #inc
     | term '--'                     #dec
-    | term '[' expr ']'             #call_array
-    | term '(' args ')'             #call_func
+    | term '[' expr ']'             #callArray
+    | term '(' args ')'             #callFunc
     ;
 
 

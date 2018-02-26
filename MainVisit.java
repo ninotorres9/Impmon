@@ -84,12 +84,20 @@ public class MainVisit {
 				"assign " + "%" + name + NEWLINE;
 		}
 
+		@Override public String visitAddAssign(ImpmonParser.AddAssignContext ctx){
+			String lhs = visit(ctx.term());
+			String rhs = visit(ctx.expr());
+			String name = ctx.term().getText();
+			return 
+				lhs + rhs + "add" + NEWLINE +
+				"assign " + "%" + name + NEWLINE;
+		}
+
 		@Override public String visitMul(ImpmonParser.MulContext ctx){
 			return visitBinary(ctx.factor(), "mul");
 		}
 
-		@Override 
-		public String visitDiv(ImpmonParser.DivContext ctx){
+		@Override public String visitDiv(ImpmonParser.DivContext ctx){
 			return visitBinary(ctx.factor(), "div");
 		}
 
