@@ -41,6 +41,9 @@ class TestImpmon(unittest.TestCase):
     def test_multAssign(self):
         self.assertEqual("2", self.compile("multAssign").replace("\n", ""))
 
+    def test_if(self):
+        self.assertEqual("0", self.compile("if").replace("\n", ""))
+
 if __name__ == '__main__':
     unittest.main()
 

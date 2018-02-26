@@ -1,0 +1,8 @@
+int main(){
+    int number = 15;
+    if(number > 20){
+        print 1;
+    }else{
+        print 0;
+    }
+}
