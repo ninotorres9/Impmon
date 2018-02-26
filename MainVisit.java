@@ -76,6 +76,10 @@ public class MainVisit {
 				"print" + NEWLINE;
 		}
 
+		public String visitTag(String name){
+			return "tag" + "@" + name + NEWLINE;
+		}
+
 		@Override public String visitIf_stmt(ImpmonParser.If_stmtContext ctx) {
 			// return 
 			
@@ -84,18 +88,18 @@ public class MainVisit {
 			if(ctx.stmt().size() == 1){
 				return cond +
 					"jz @ENDIF" + NEWLINE +
-					"tag @IF" + NEWLINE +
+					visitTag("IF") + 
 					visit(ctx.stmt(0)) + 
-					"tag @ENDIF" + NEWLINE;
+					visitTag("ENDIF");
 			}else{
 				return cond +
 					"jz @ELSE" + NEWLINE +
-					"tag @IF" + NEWLINE +
+					visitTag("IF") + 
 					visit(ctx.stmt(0)) + 
 					"jmp @ENDIF" + NEWLINE +
-					"tag @ELSE" + NEWLINE +
+					visitTag("ELSE") + 
 					visit(ctx.stmt(1)) +
-					"tag @ENDIF" + NEWLINE;
+					visitTag("ENDIF");
 			}
 		}
 
