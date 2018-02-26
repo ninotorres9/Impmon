@@ -1,8 +1,16 @@
-tag main 
-push 1 
-push 5 
-add 
-push 2 
-mul 
-print
+tag @main 
+push 50 
+store %number 
+push %number 
+push 200 
+gtn 
+jz @ELSE 
+tag @IF 
+push 20 
+print 
+jmp @ENDIF 
+tag @ELSE 
+push 250 
+print 
+tag @ENDIF 
 

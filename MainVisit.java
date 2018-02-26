@@ -28,7 +28,7 @@ public class MainVisit {
 		public String visitDefunc(ImpmonParser.DefuncContext ctx) { 
 			String name = ctx.name().getText();
 			String block = visit(ctx.block()); 
-			return "tag " + name + NEWLINE + block;
+			return "tag " + "@" + name + NEWLINE + block;
 		}	
 
 		@Override public String visitDefvars(ImpmonParser.DefvarsContext ctx){
@@ -73,7 +73,20 @@ public class MainVisit {
 			String value = visit(ctx.expr());
 			return 
 				value + 
-				"print" + "\r\n";
+				"print" + NEWLINE;
+		}
+
+		@Override public String visitIf_stmt(ImpmonParser.If_stmtContext ctx) {
+			// return 
+			String cond = visit(ctx.expr());
+			return cond +
+				"jz @ELSE" + NEWLINE +
+				"tag @IF" + NEWLINE +
+				visit(ctx.stmt(0)) + 
+				"jmp @ENDIF" + NEWLINE +
+				"tag @ELSE" + NEWLINE +
+				visit(ctx.stmt(1)) +
+				"tag @ENDIF" + NEWLINE;
 		}
 
 		@Override public String visitAssign(ImpmonParser.AssignContext ctx) {
