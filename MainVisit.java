@@ -233,6 +233,24 @@ public class MainVisit {
 			return visit(ctx.expr());
 		}
 
+		@Override public String visitInc(ImpmonParser.IncContext ctx){
+			String lhs = visit(ctx.term());
+			String rhs = "push 1" + NEWLINE;
+			String name = ctx.term().getText();
+			return 
+				lhs + rhs + "add" + NEWLINE +
+				"assign " + "%" + name + NEWLINE;
+		}
+
+		@Override public String visitDec(ImpmonParser.DecContext ctx){
+			String lhs = visit(ctx.term());
+			String rhs = "push 1" + NEWLINE;
+			String name = ctx.term().getText();
+			return 
+				lhs + rhs + "sub" + NEWLINE +
+				"assign " + "%" + name + NEWLINE;
+		}
+
 	}
 
 	public static void main(String[] args) throws Exception {

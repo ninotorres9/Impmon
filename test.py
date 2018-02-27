@@ -62,6 +62,12 @@ class TestImpmon(unittest.TestCase):
     def test_while(self):
         self.assertEqual("25", self.compile("while").replace("\n", ""))
 
+    def test_incDec(self):
+        self.assertEqual("15", self.compile("incDec").replace("\n", ""))
+
+    def test_nestedWhile(self):
+        self.assertEqual("100", self.compile("nestedWhile").replace("\n", ""))
+
 if __name__ == '__main__':
     unittest.main()
 

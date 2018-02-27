@@ -1,0 +1,8 @@
+int main(){
+    int lhs = 10;
+    int rhs = 5;
+    lhs++;
+    rhs--;
+    print lhs + rhs;
+
+}
