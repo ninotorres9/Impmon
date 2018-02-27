@@ -17,6 +17,14 @@ public class MainVisit {
 
 	private static class Visitor extends ImpmonBaseVisitor<String> {
 		static final String NEWLINE = " \r\n";
+		private int count = 0;	// 记录tag数量（暂时只记录if)
+		private String getTagCount(){
+			return Integer.toString(count++);
+		}
+
+		public String visitTag(String name){
+			return "tag " + "@" + name + NEWLINE;
+		}
 
 		public String visitBinary(List<?> list, String op){
 			String lhs = visit((ParseTree)list.get(0));
@@ -76,30 +84,29 @@ public class MainVisit {
 				"print" + NEWLINE;
 		}
 
-		public String visitTag(String name){
-			return "tag" + "@" + name + NEWLINE;
-		}
 
 		@Override public String visitIf_stmt(ImpmonParser.If_stmtContext ctx) {
 			// return 
 			
+			String tagCount = getTagCount();
+	
 			String cond = visit(ctx.expr());
 
 			if(ctx.stmt().size() == 1){
 				return cond +
-					"jz @ENDIF" + NEWLINE +
-					visitTag("IF") + 
+					"jz @ENDIF"+ tagCount + NEWLINE +
+					visitTag("IF" + tagCount) + 
 					visit(ctx.stmt(0)) + 
-					visitTag("ENDIF");
+					visitTag("ENDIF" + tagCount);
 			}else{
 				return cond +
-					"jz @ELSE" + NEWLINE +
-					visitTag("IF") + 
+					"jz @ELSE" + tagCount + NEWLINE +
+					visitTag("IF" + tagCount) + 
 					visit(ctx.stmt(0)) + 
-					"jmp @ENDIF" + NEWLINE +
-					visitTag("ELSE") + 
+					"jmp @ENDIF" + tagCount + NEWLINE +
+					visitTag("ELSE" + tagCount) + 
 					visit(ctx.stmt(1)) +
-					visitTag("ENDIF");
+					visitTag("ENDIF" + tagCount);
 			}
 		}
 

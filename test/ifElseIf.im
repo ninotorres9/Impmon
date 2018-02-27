@@ -1,0 +1,12 @@
+int main(){
+    int number = 25;
+    if(number == 10){
+        print 1;
+    }else if(number == 15){
+        print 10;
+    }else if(number == 25){
+        print 25;
+    }else{
+        print 2;
+    }
+}
