@@ -22,18 +22,27 @@ public class MainVisit {
 			return Integer.toString(count++);
 		}
 
-		public String visitTag(String name){
+		private String getTagCode(String name){
 			return "tag " + "@" + name + NEWLINE;
 		}
 
-		public String visitBinary(List<?> list, String op){
-			String lhs = visit((ParseTree)list.get(0));
-			String rhs = visit((ParseTree)list.get(1));
+		private String getAssignCode(String name, String value){
+			return 
+				value +
+				"assign " + "%" + name + NEWLINE;
+		}
+
+		private String getBaseBinaryCode(String lhs, String rhs, String op){
 			return lhs + rhs + op + NEWLINE;
 		}
 
-		@Override 
-		public String visitDefunc(ImpmonParser.DefuncContext ctx) { 
+		private String getBinaryCode(List<?> list, String op){
+			String lhs = visit((ParseTree)list.get(0));
+			String rhs = visit((ParseTree)list.get(1));
+			return getBaseBinaryCode(lhs, rhs, op);
+		}
+
+		@Override public String visitDefunc(ImpmonParser.DefuncContext ctx) { 
 			String name = ctx.name().getText();
 			String block = visit(ctx.block()); 
 			return "tag " + "@" + name + NEWLINE + block;
@@ -89,28 +98,28 @@ public class MainVisit {
 		}
 
 
-		@Override public String visitIf_stmt(ImpmonParser.If_stmtContext ctx) {
-			// return 
-			
-			String tagCount = getTagCount();
-	
-			String cond = visit(ctx.expr());
+		private String getJumpCode(String op, String tag){
+			return op + " " + "@" + tag + NEWLINE;
+		}
 
+		@Override public String visitIf_stmt(ImpmonParser.If_stmtContext ctx) {
+			String tagCount = getTagCount();
+			String cond = visit(ctx.expr());
 			if(ctx.stmt().size() == 1){
 				return cond +
-					"jz @ENDIF"+ tagCount + NEWLINE +
-					visitTag("IF" + tagCount) + 
+					getJumpCode("jz", "ENDIF" + tagCount) +
+					getTagCode("IF" + tagCount) + 
 					visit(ctx.stmt(0)) + 
-					visitTag("ENDIF" + tagCount);
+					getTagCode("ENDIF" + tagCount);
 			}else{
 				return cond +
-					"jz @ELSE" + tagCount + NEWLINE +
-					visitTag("IF" + tagCount) + 
+					getJumpCode("jz", "ELSE" + tagCount) + 
+					getTagCode("IF" + tagCount) + 
 					visit(ctx.stmt(0)) + 
-					"jmp @ENDIF" + tagCount + NEWLINE +
-					visitTag("ELSE" + tagCount) + 
+					getJumpCode("jmp", "ENDIF" + tagCount) + 
+					getTagCode("ELSE" + tagCount) + 
 					visit(ctx.stmt(1)) +
-					visitTag("ENDIF" + tagCount);
+					getTagCode("ENDIF" + tagCount);
 			}
 		}
 
@@ -118,105 +127,100 @@ public class MainVisit {
 			String tagCount = getTagCount();
 
 			String cond = visit(ctx.expr());
-			return visitTag("WHILE" + tagCount) +
+			return getTagCode("WHILE" + tagCount) +
 				cond +
 				"jz @ENDWHILE" + tagCount + NEWLINE +
 				visit(ctx.stmt()) + 
 				"jmp @WHILE" + tagCount + NEWLINE +
-				visitTag("ENDWHILE" + tagCount);
+				getTagCode("ENDWHILE" + tagCount);
 
 		}
+
 
 		@Override public String visitAssign(ImpmonParser.AssignContext ctx) {
 			String value = visit(ctx.expr());
 			String name = ctx.term().getText();
-			return 
-				value +
-				"assign " + "%" + name + NEWLINE;
+			return getAssignCode(name, value);
 		}
 
 		@Override public String visitAddAssign(ImpmonParser.AddAssignContext ctx){
 			String lhs = visit(ctx.term());
 			String rhs = visit(ctx.expr());
+			String value = getBaseBinaryCode(lhs, rhs, "add");
 			String name = ctx.term().getText();
-			return 
-				lhs + rhs + "add" + NEWLINE +
-				"assign " + "%" + name + NEWLINE;
+			return getAssignCode(name, value);
 		}
 
 		@Override public String visitSubAssign(ImpmonParser.SubAssignContext ctx){
 			String lhs = visit(ctx.term());
 			String rhs = visit(ctx.expr());
+			String value = getBaseBinaryCode(lhs, rhs, "sub");
 			String name = ctx.term().getText();
-			return 
-				lhs + rhs + "sub" + NEWLINE +
-				"assign " + "%" + name + NEWLINE;
+			return getAssignCode(name, value);
 		}
 
 		@Override public String visitMulAssign(ImpmonParser.MulAssignContext ctx){
 			String lhs = visit(ctx.term());
 			String rhs = visit(ctx.expr());
+			String value = getBaseBinaryCode(lhs, rhs, "mul");
 			String name = ctx.term().getText();
-			return 
-				lhs + rhs + "mul" + NEWLINE +
-				"assign " + "%" + name + NEWLINE;
+			return getAssignCode(name, value);
 		}
 
 		@Override public String visitDivAssign(ImpmonParser.DivAssignContext ctx){
 			String lhs = visit(ctx.term());
 			String rhs = visit(ctx.expr());
+			String value = getBaseBinaryCode(lhs, rhs, "div");
 			String name = ctx.term().getText();
-			return 
-				lhs + rhs + "div" + NEWLINE +
-				"assign " + "%" + name + NEWLINE;
+			return getAssignCode(name, value);
 		}
 
 		@Override public String visitMul(ImpmonParser.MulContext ctx){
-			return visitBinary(ctx.factor(), "mul");
+			return getBinaryCode(ctx.factor(), "mul");
 		}
 
 		@Override public String visitDiv(ImpmonParser.DivContext ctx){
-			return visitBinary(ctx.factor(), "div");
+			return getBinaryCode(ctx.factor(), "div");
 		}
 
 		@Override public String visitAdd(ImpmonParser.AddContext ctx) {
-			return visitBinary(ctx.factor(), "add");
+			return getBinaryCode(ctx.factor(), "add");
 		}
 
 		@Override public String visitSub(ImpmonParser.SubContext ctx) {
-			return visitBinary(ctx.factor(), "sub");
+			return getBinaryCode(ctx.factor(), "sub");
 		}
 
 		@Override public String visitGtn(ImpmonParser.GtnContext ctx){
-			return visitBinary(ctx.factor(), "gtn");
+			return getBinaryCode(ctx.factor(), "gtn");
 		}
 
 		@Override public String visitLtn(ImpmonParser.LtnContext ctx){
-			return visitBinary(ctx.factor(), "ltn");
+			return getBinaryCode(ctx.factor(), "ltn");
 		}
 
 		@Override public String visitGoe(ImpmonParser.GoeContext ctx){
-			return visitBinary(ctx.factor(), "goe");
+			return getBinaryCode(ctx.factor(), "goe");
 		}
 
 		@Override public String visitLoe(ImpmonParser.LoeContext ctx){
-			return visitBinary(ctx.factor(), "loe");
+			return getBinaryCode(ctx.factor(), "loe");
 		}
 
 		@Override public String visitEq(ImpmonParser.EqContext ctx) {
-			return visitBinary(ctx.factor(), "eq");
+			return getBinaryCode(ctx.factor(), "eq");
 		}
 
 		@Override public String visitNeq(ImpmonParser.NeqContext ctx){
-			return visitBinary(ctx.factor(), "neq");
+			return getBinaryCode(ctx.factor(), "neq");
 		}
 
 		@Override public String visitAnd(ImpmonParser.AndContext ctx){
-			return visitBinary(ctx.factor(), "and");
+			return getBinaryCode(ctx.factor(), "and");
 		}
 
 		@Override public String visitOr(ImpmonParser.OrContext ctx){
-			return visitBinary(ctx.factor(), "or");
+			return getBinaryCode(ctx.factor(), "or");
 		}
 
 		@Override public String visitInt(ImpmonParser.IntContext ctx) { 
