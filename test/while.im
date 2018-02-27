@@ -1,0 +1,9 @@
+int main(){
+    int result = 20;
+    int count = 5;
+    while(count > 0){
+        result += 1;
+        count -= 1;
+    }
+    print result;
+}

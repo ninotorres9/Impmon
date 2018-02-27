@@ -56,6 +56,12 @@ class TestImpmon(unittest.TestCase):
     def test_nestedIf(self):
         self.assertEqual("999", self.compile("nestedIf").replace("\n", ""))
 
+    def test_multDef(self):
+        self.assertEqual("25", self.compile("multDef").replace("\n", ""))
+
+    def test_while(self):
+        self.assertEqual("25", self.compile("while").replace("\n", ""))
+
 if __name__ == '__main__':
     unittest.main()
 

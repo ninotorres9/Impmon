@@ -65,9 +65,6 @@ if_stmt
 while_stmt
     : 'while' '(' expr ')' stmt
     ;
-dowhile_stmt
-    : 'do' stmt 'while' '(' expr ')'
-    ;
 for_stmt
     : 'for' '(' expr ';' expr ';' expr ')' stmt
     ;

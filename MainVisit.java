@@ -60,7 +60,11 @@ public class MainVisit {
 			if(ctx.defvars().size() == 0){
 				return "";
 			}else{
-				return visitChildren(ctx);
+				String result = "";
+				for(ImpmonParser.DefvarsContext defvar : ctx.defvars()){
+					result += visit(defvar);
+				}
+				return result;
 			}
 		}
 
@@ -108,6 +112,19 @@ public class MainVisit {
 					visit(ctx.stmt(1)) +
 					visitTag("ENDIF" + tagCount);
 			}
+		}
+
+		@Override public String visitWhile_stmt(ImpmonParser.While_stmtContext ctx){
+			String tagCount = getTagCount();
+
+			String cond = visit(ctx.expr());
+			return visitTag("WHILE" + tagCount) +
+				cond +
+				"jz @ENDWHILE" + tagCount + NEWLINE +
+				visit(ctx.stmt()) + 
+				"jmp @WHILE" + tagCount + NEWLINE +
+				visitTag("ENDWHILE" + tagCount);
+
 		}
 
 		@Override public String visitAssign(ImpmonParser.AssignContext ctx) {

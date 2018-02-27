@@ -1,0 +1,5 @@
+int main(){
+    int lhs = 10;
+    int rhs = 15;
+    print lhs + rhs;
+}
