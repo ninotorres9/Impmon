@@ -125,17 +125,29 @@ public class MainVisit {
 
 		@Override public String visitFor_stmt(ImpmonParser.For_stmtContext ctx){
 			String tagCount = getTagCount();
+			String initExpression = visit(ctx.defvars());
+			String condExpression = visit(ctx.expr(0));
+			String loopExpression = visit(ctx.expr(1));
+			String blockStatement = visit(ctx.stmt());
+
+
 			return 
-				getTagCode("FOR" + tagCount) +
-				// visit(ctx.expr(0)) +	// assignment					
-				visit(ctx.defvars()) + 
+				/* initExpression is executed only once */
+				getTagCode("FOR" + tagCount) +			
+				initExpression + 
+				
+				/* executed only if condExpression evaluates to true */
 				getTagCode("LOOP" + tagCount) + 
-				visit(ctx.expr(0)) + 	// condition			
-				// returned tag ENDFOR if the condition is false
+				condExpression + 		
+				// returned tag ENDFOR if the condition is false		
 				getJumpCode("jz", "ENDFOR" + tagCount) +	
-				visit(ctx.stmt()) + // block
-				visit(ctx.expr(1)) + // i++
-				getJumpCode("jmp", "LOOP" + tagCount) + 	
+				loopExpression +
+
+				/* what needs to be executed */
+				blockStatement +
+				getJumpCode("jmp", "LOOP" + tagCount) +  // return tag LOOP
+
+				/* end loop and deleted temp variable */
 				getTagCode("ENDFOR" + tagCount) +
 				"free " + "%" + ctx.defvars().name(0).getText() + NEWLINE;
 		}
