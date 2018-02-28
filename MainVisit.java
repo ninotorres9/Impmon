@@ -132,22 +132,20 @@ public class MainVisit {
 
 
 			return 
-				/* initExpression is executed only once */
+				// initExpression is executed only once
 				getTagCode("FOR" + tagCount) +			
 				initExpression + 
 				
-				/* executed only if condExpression evaluates to true */
 				getTagCode("LOOP" + tagCount) + 
 				condExpression + 		
-				// returned tag ENDFOR if the condition is false		
+				// jump to tag ENDFOR if the condition is false		
 				getJumpCode("jz", "ENDFOR" + tagCount) +	
 				loopExpression +
-
-				/* what needs to be executed */
+				// or else execute blockStatement
 				blockStatement +
-				getJumpCode("jmp", "LOOP" + tagCount) +  // return tag LOOP
+				getJumpCode("jmp", "LOOP" + tagCount) +  // continues to loop
 
-				/* end loop and deleted temp variable */
+				// end loop and deleted temp variable
 				getTagCode("ENDFOR" + tagCount) +
 				"free " + "%" + ctx.defvars().name(0).getText() + NEWLINE;
 		}
@@ -155,12 +153,19 @@ public class MainVisit {
 		@Override public String visitWhile_stmt(ImpmonParser.While_stmtContext ctx){
 			String tagCount = getTagCount();
 
-			String cond = visit(ctx.expr());
-			return getTagCode("WHILE" + tagCount) +
-				cond +
-				"jz @ENDWHILE" + tagCount + NEWLINE +
-				visit(ctx.stmt()) + 
-				"jmp @WHILE" + tagCount + NEWLINE +
+			String condExpression = visit(ctx.expr());
+			String blockStatement = visit(ctx.stmt());
+			return 
+				getTagCode("WHILE" + tagCount) +
+
+				// jump to tag ENDWHILE if condExpression evaluates to false
+				// or else execute blockStatement
+				condExpression +
+				getJumpCode("jz", "ENDWHILE" + tagCount) + 
+				blockStatement + 
+
+				// return the tag WHILE and continues to loop
+				getJumpCode("jmp", "WHILE" + tagCount) + 
 				getTagCode("ENDWHILE" + tagCount);
 
 		}
