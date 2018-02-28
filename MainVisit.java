@@ -123,6 +123,23 @@ public class MainVisit {
 			}
 		}
 
+		@Override public String visitFor_stmt(ImpmonParser.For_stmtContext ctx){
+			String tagCount = getTagCount();
+			return 
+				getTagCode("FOR" + tagCount) +
+				// visit(ctx.expr(0)) +	// assignment					
+				visit(ctx.defvars()) + 
+				getTagCode("LOOP" + tagCount) + 
+				visit(ctx.expr(0)) + 	// condition			
+				// returned tag ENDFOR if the condition is false
+				getJumpCode("jz", "ENDFOR" + tagCount) +	
+				visit(ctx.stmt()) + // block
+				visit(ctx.expr(1)) + // i++
+				getJumpCode("jmp", "LOOP" + tagCount) + 	
+				getTagCode("ENDFOR" + tagCount) +
+				"free " + "%" + ctx.defvars().name(0).getText() + NEWLINE;
+		}
+
 		@Override public String visitWhile_stmt(ImpmonParser.While_stmtContext ctx){
 			String tagCount = getTagCount();
 
