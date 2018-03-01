@@ -49,11 +49,16 @@ public class MainVisit {
 		}	
 
 		@Override public String visitDefvars(ImpmonParser.DefvarsContext ctx){
+
+			// if the array type get "store_a", or else get "store"
+			String storeType = visit(ctx.type());
+
 			String name = ctx.name(0).getText();
 			String value = visit(ctx.expr(0));
 			return 
 				value +
-				"store " + "%" + name + NEWLINE;
+				// "store " + "%" + name + NEWLINE;
+				storeType + " %" + name + NEWLINE;
 		}
 
 		@Override public String visitToExpr(ImpmonParser.ToExprContext ctx){
@@ -257,6 +262,14 @@ public class MainVisit {
 			return getBinaryCode(ctx.factor(), "or");
 		}
 
+		@Override public String visitArrayType(ImpmonParser.ArrayTypeContext ctx){
+			return "store_a";
+		}
+
+		@Override public String visitBaseType(ImpmonParser.BaseTypeContext ctx){
+			return "store";
+		}
+
 		@Override public String visitInt(ImpmonParser.IntContext ctx) { 
 			String value = ctx.INTEGER().getText();
 			return "push " + value + NEWLINE;
@@ -287,6 +300,13 @@ public class MainVisit {
 			return 
 				lhs + rhs + "sub" + NEWLINE +
 				"assign " + "%" + name + NEWLINE;
+		}
+
+		@Override public String visitCallArray(ImpmonParser.CallArrayContext ctx){
+			String index = visit(ctx.expr());
+			String name = ctx.term().getText();
+			return 
+				"push_a " + "%" + name + NEWLINE;
 		}
 
 	}

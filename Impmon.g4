@@ -15,16 +15,13 @@ import_stmt
 
 // 定义
 tof_defs
-    : (defunc | defvars | defconst | defstruct | defunion | typedef)*
+    : (defunc | defvars | defstruct | defunion | typedef)*
     ;
 defunc
     : type name '(' (params)? ')' block
     ;
 defvars
     : type name ('=' expr (',' name ('=' expr)?)* )?';'
-    ;
-defconst
-    : 'const' defvars ';'
     ;
 defstruct
     : 'struct' name member_list
@@ -59,9 +56,6 @@ stmt
 labeled_stmt
     : IDENTIFIER ':' stmt
     ;
-// if_stmt 
-//     : 'if' '(' expr ')' stmt ('else' stmt)?
-//     ;
 if_stmt 
     : 'if' '(' expr ')' stmt ('else' stmt)?
     ;
@@ -137,11 +131,9 @@ type
     : typeref
     ;
 typeref 
-    : typeref_base '['']'
-    | typeref_base '[' INTEGER ']'
-    | typeref_base '*'
-    | typeref_base
-    ; // 差一个函数指针
+    : typeref_base '[' INTEGER ']'  #arrayType
+    | typeref_base                  #baseType
+    ; 
 typeref_base
     : 'void'
     | 'char'

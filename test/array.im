@@ -1,0 +1,5 @@
+int main(){
+    int[10] array;
+    array[0] = 15;
+    print array[0];
+}
