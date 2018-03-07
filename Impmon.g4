@@ -38,7 +38,7 @@ stmts
     : stmt*
     ;
 stmt
-    : ';'               #passStmt
+    : ';'               #emptyStmt
     | labeled_stmt      #labeledStmt
     | expr ';'          #toExpr
     | block             #blockStmt

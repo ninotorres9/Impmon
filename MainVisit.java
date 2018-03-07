@@ -107,6 +107,10 @@ public class MainVisit {
 			return op + " " + "@" + tag + NEWLINE;
 		}
 
+		@Override public String visitEmptyStmt(ImpmonParser.EmptyStmtContext ctx){
+			return "";
+		}
+
 		@Override public String visitIf_stmt(ImpmonParser.If_stmtContext ctx) {
 			String tagCount = getTagCount();
 			String cond = visit(ctx.expr());

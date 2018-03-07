@@ -71,6 +71,9 @@ class TestImpmon(unittest.TestCase):
     def test_for(self):
         self.assertEqual("25", self.compile("for").replace("\n", ""))
 
+    def test_emptyStatement(self):
+        self.assertEqual("50", self.compile("emptyStatement").replace("\n", ""))
+
     # def test_array(self):
     #     self.assertEqual("15", self.compile("array").replace("\n", ""))
 
