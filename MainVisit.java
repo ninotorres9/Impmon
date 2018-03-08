@@ -141,8 +141,11 @@ public class MainVisit {
 
 
 			return 
-				// initExpression is executed only once
+				
 				getTagCode("FOR" + tagCount) +			
+				// enter a new sub scope
+				"newscope" + NEWLINE +
+				
 				initExpression + 
 				
 				getTagCode("LOOP" + tagCount) + 
@@ -156,7 +159,9 @@ public class MainVisit {
 
 				// end loop and deleted temp variable
 				getTagCode("ENDFOR" + tagCount) +
-				"free " + "%" + ctx.defvars().name(0).getText() + NEWLINE;
+
+				// exit current scope
+				"exitscope" + NEWLINE;
 		}
 
 		@Override public String visitWhile_stmt(ImpmonParser.While_stmtContext ctx){
