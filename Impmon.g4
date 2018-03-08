@@ -21,7 +21,8 @@ defunc
     : type name '(' (params)? ')' block
     ;
 defvars
-    : type name ('=' expr (',' name ('=' expr)?)* )?';'
+    : type name ('=' expr (',' name ('=' expr)?)* )?';' #defvar
+    | type '[' expr ']' name ';'                        #defarr
     ;
 defstruct
     : 'struct' name member_list
@@ -131,8 +132,8 @@ type
     : typeref
     ;
 typeref 
-    : typeref_base '[' INTEGER ']'  #arrayType
-    | typeref_base                  #baseType
+    // : typeref_base '[' INTEGER ']'  #arrayType
+    : typeref_base                  // #baseType
     ; 
 typeref_base
     : 'void'

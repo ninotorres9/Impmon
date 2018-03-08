@@ -77,8 +77,8 @@ class TestImpmon(unittest.TestCase):
     def test_nestedScope(self):
         self.assertEqual("50", self.compile("nestedScope").replace("\n", ""))
 
-    # def test_array(self):
-    #     self.assertEqual("15", self.compile("array").replace("\n", ""))
+    def test_array(self):
+        self.assertEqual("19", self.compile("array").replace("\n", ""))
 
 if __name__ == '__main__':
     unittest.main()

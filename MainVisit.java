@@ -27,9 +27,20 @@ public class MainVisit {
 		}
 
 		private String getAssignCode(String name, String value){
-			return 
-				value +
-				"assign " + "%" + name + NEWLINE;
+			// if name contains square, is an array
+			if(name.contains("[")){
+				String arrName = name.split("\\[")[0];
+				// array[index] -> index] -> index
+				String index = name.split("\\[")[1].split("]")[0];
+				return 
+					value + 
+					"push " + index + NEWLINE +
+					"assign_a " + "%" + arrName + NEWLINE;
+			}else{
+				return 
+					value +
+					"assign " + "%" + name + NEWLINE;
+			}
 		}
 
 		private String getBaseBinaryCode(String lhs, String rhs, String op){
@@ -48,17 +59,21 @@ public class MainVisit {
 			return "tag " + "@" + name + NEWLINE + block;
 		}	
 
-		@Override public String visitDefvars(ImpmonParser.DefvarsContext ctx){
 
-			// if the array type get "store_a", or else get "store"
-			String storeType = visit(ctx.type());
-
+		@Override public String visitDefvar(ImpmonParser.DefvarContext ctx){
 			String name = ctx.name(0).getText();
 			String value = visit(ctx.expr(0));
 			return 
 				value +
-				// "store " + "%" + name + NEWLINE;
-				storeType + " %" + name + NEWLINE;
+				"store " + "%" + name + NEWLINE;
+		}
+
+		@Override public String visitDefarr(ImpmonParser.DefarrContext ctx){
+			String name = ctx.name().getText();
+			String index = visit(ctx.expr());
+			return 
+				index +
+				"store_a " + "%" + name + NEWLINE;
 		}
 
 		@Override public String visitToExpr(ImpmonParser.ToExprContext ctx){
@@ -271,13 +286,13 @@ public class MainVisit {
 			return getBinaryCode(ctx.factor(), "or");
 		}
 
-		@Override public String visitArrayType(ImpmonParser.ArrayTypeContext ctx){
-			return "store_a";
-		}
+		// @Override public String visitArrayType(ImpmonParser.ArrayTypeContext ctx){
+		// 	return "store_a";
+		// }
 
-		@Override public String visitBaseType(ImpmonParser.BaseTypeContext ctx){
-			return "store";
-		}
+		// @Override public String visitBaseType(ImpmonParser.BaseTypeContext ctx){
+		// 	return "store";
+		// }
 
 		@Override public String visitInt(ImpmonParser.IntContext ctx) { 
 			String value = ctx.INTEGER().getText();
@@ -315,6 +330,7 @@ public class MainVisit {
 			String index = visit(ctx.expr());
 			String name = ctx.term().getText();
 			return 
+				index + 
 				"push_a " + "%" + name + NEWLINE;
 		}
 
