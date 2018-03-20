@@ -286,14 +286,6 @@ public class MainVisit {
 			return getBinaryCode(ctx.factor(), "or");
 		}
 
-		// @Override public String visitArrayType(ImpmonParser.ArrayTypeContext ctx){
-		// 	return "store_a";
-		// }
-
-		// @Override public String visitBaseType(ImpmonParser.BaseTypeContext ctx){
-		// 	return "store";
-		// }
-
 		@Override public String visitInt(ImpmonParser.IntContext ctx) { 
 			String value = ctx.INTEGER().getText();
 			return "push " + value + NEWLINE;

@@ -15,7 +15,7 @@ import_stmt
 
 // 定义
 tof_defs
-    : (defunc | defvars | defstruct | defunion | typedef)*
+    : (defunc | defvars )*
     ;
 defunc
     : type name '(' (params)? ')' block
@@ -24,14 +24,8 @@ defvars
     : type name ('=' expr (',' name ('=' expr)?)* )?';' #defvar
     | type '[' expr ']' name ';'                        #defarr
     ;
-defstruct
-    : 'struct' name member_list
-    ;
-defunion
-    : 'union' name member_list
-    ;
-typedef
-    : 'typedef' type IDENTIFIER ';'
+defclass
+    : type name '{' '}'
     ;
 
 // stmts
