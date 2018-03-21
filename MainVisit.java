@@ -10,9 +10,13 @@ import java.io.PrintWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
+import java.util.Hashtable;
 
 public class MainVisit {
 
+
+	private static Hashtable<String, String> variableTable 
+		= new Hashtable<String, String>();
 	
 
 	private static class Visitor extends ImpmonBaseVisitor<String> {
@@ -328,36 +332,33 @@ public class MainVisit {
 
 	}
 
+
+	private static void generate(String filename) throws Exception{
+		File file = new File(filename);
+		FileInputStream stream = null;
+
+		stream = new FileInputStream(file);
+		ANTLRInputStream input = new ANTLRInputStream(stream);
+		ImpmonLexer lexer = new ImpmonLexer(input);
+		CommonTokenStream tokens = new CommonTokenStream(lexer);
+
+		ImpmonParser parser = new ImpmonParser(tokens);
+		ParseTree tree = parser.compilation_unit(); 
+		Visitor eval = new Visitor();
+
+		// to file
+		PrintWriter writer = new PrintWriter("demo.gl", "ascii");
+		writer.println(eval.visit(tree));
+		writer.close();
+
+		// print
+		System.out.println(eval.visit(tree));
+	}
+
 	public static void main(String[] args) throws Exception {
 		if(args.length > 0){
 			String filename = args[0];
-			File file = new File(filename);
-			FileInputStream stream = null;
-
-			stream = new FileInputStream(file);
-			ANTLRInputStream input = new ANTLRInputStream(stream);
-			ImpmonLexer lexer = new ImpmonLexer(input);
-			CommonTokenStream tokens = new CommonTokenStream(lexer);
-
-			ImpmonParser parser = new ImpmonParser(tokens);
-			ParseTree tree = parser.compilation_unit(); 
-			Visitor eval = new Visitor();
-
-			// to file
-			PrintWriter writer = new PrintWriter("demo.gl", "ascii");
-			writer.println(eval.visit(tree));
-			writer.close();
-
-			// print
-			System.out.println(eval.visit(tree));
+			generate(filename);
 		}
-
-
-
-
-		
-
-		
-
 	}
 }
