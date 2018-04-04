@@ -6,7 +6,7 @@ import re
 
 class TestImpmon(unittest.TestCase):
     def compile(self, filename):
-        with os.popen("java MainVisit E:\\code\\Impmon\\test\\" + filename + ".im") as ir:
+        with os.popen("java -jar E:\\code\\Impmon\\out\\artifacts\\Impmon_jar\\Impmon.jar E:\\code\\Impmon\\test\\" + filename + ".im") as ir:
             pass
         with os.popen("E:\\code\\Guilmon\\Debug\\Guilmon.exe -r demo.gl") as result:
             return result.read()
@@ -69,7 +69,7 @@ class TestImpmon(unittest.TestCase):
         self.assertEqual("100", self.compile("nestedWhile").replace("\n", ""))
 
     def test_for(self):
-        self.assertEqual("25", self.compile("for").replace("\n", ""))
+        self.assertEqual("10", self.compile("for").replace("\n", ""))
 
     def test_emptyStatement(self):
         self.assertEqual("50", self.compile("emptyStatement").replace("\n", ""))

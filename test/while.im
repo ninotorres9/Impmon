@@ -7,3 +7,16 @@ int main(){
     }
     print result;
 }
+
+
+tag @main
+    push 20
+    store %result
+    push 5
+    store %count
+    push count
+    push 0
+    gtn
+    jz @ENDWHILE0
+tag @WHILE0
+tag @ENDWHILE0
