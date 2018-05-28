@@ -1,8 +1,0 @@
-
-
-string i = "abc";
-
-int main(){
-    i = 10;
-    return 0;
-}

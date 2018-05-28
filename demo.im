@@ -1,0 +1,11 @@
+
+
+
+
+def main(){
+    result = 0;
+    for(i = 0; i != 10; i+=1){
+        result += i;
+    }
+    print result;
+}	

@@ -1,6 +1,0 @@
-int main(){
-    int number = 50;
-    if(number > 20){
-        print 250;
-    }
-}
