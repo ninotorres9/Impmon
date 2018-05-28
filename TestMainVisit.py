@@ -276,7 +276,7 @@ class TestMainVisit(unittest.TestCase):
                 push %i
                 push 10
                 neq
-                jz @END_IF_0
+                jz @END_FOR_0
             tag @FOR_BODY_0
                 push %i
                 print

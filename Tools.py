@@ -75,7 +75,7 @@ def generateForCode(getContext):
         return joinLineBreak([
             getTagCode("FOR_INITIALIZATION", number), initialization,
             getTagCode("FOR_CONDITION", number), conditon,
-            getJumpCode("jz", "END_IF", number),
+            getJumpCode("jz", "END_FOR", number),
             getTagCode("FOR_BODY", number), body,
             getTagCode("FOR_INCREMENT", number), increment,
             getJumpCode("jmp", "FOR_CONDITION", number),
