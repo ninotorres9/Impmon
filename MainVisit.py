@@ -12,8 +12,17 @@ from Tools import *
 class CodeGenerator(ImpmonVisitor):
     def getNameAndValueFromAssign(self, ctx):
         name = ctx.term().getText()
+
+        if ("[" in name):
+            # 获取array[index]相关生成代码，并去掉最后一行push（暂时）
+            prefix = self.visit(ctx.term()).rsplit("\n  ", 1)[0]
+            # 去掉name中[index]部分
+            name = name.split("[")[0]
+        else:
+            prefix = ""
+
         value = self.visit(ctx.expr())
-        return name, value
+        return prefix, name, value
 
     def visitCompilation_unit(self, ctx):
         return self.visitChildren(ctx)

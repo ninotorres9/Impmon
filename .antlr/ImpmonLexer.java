@@ -1,4 +1,4 @@
-// Generated from e:\code\Impmon_Python\Impmon\Impmon.g4 by ANTLR 4.7.1
+// Generated from e:\code\Impmon\Impmon.g4 by ANTLR 4.7.1
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;

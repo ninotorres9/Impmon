@@ -73,11 +73,15 @@ def generateForCode(getContext):
         initialization, conditon, increment, body = getContext(self, ctx)
         number = getTagNumber()
         return joinLineBreak([
-            getTagCode("FOR_INITIALIZATION", number), initialization,
-            getTagCode("FOR_CONDITION", number), conditon,
+            getTagCode("FOR_INITIALIZATION", number),
+            initialization,
+            getTagCode("FOR_CONDITION", number),
+            conditon,
             getJumpCode("jz", "END_FOR", number),
-            getTagCode("FOR_BODY", number), body,
-            getTagCode("FOR_INCREMENT", number), increment,
+            getTagCode("FOR_BODY", number),
+            body,
+            getTagCode("FOR_INCREMENT", number),
+            increment,
             getJumpCode("jmp", "FOR_CONDITION", number),
             getTagCode("END_FOR", number),
         ])
@@ -121,24 +125,8 @@ def generatePrintCode(getContext):
 
 def generateAssignCode(getContext):
     def decorate(self, ctx):
-        name, value = getContext(self, ctx)
-        return joinLineBreak([value, getAssignCode(name)])
-
-    return decorate
-
-
-def generateCallArrayCode(getContext):
-    def decorate(self, ctx):
-        name, index = getContext(self, ctx)
-        return joinLineBreak([index, getPushCode("&"), getPushCode(name, "%")])
-
-    return decorate
-
-
-def generateArrayCode(getContext):
-    def decorate(self, ctx):
-        args, length = getContext(self, ctx)
-        return joinLineBreak(args + [getPushCode(length), getPushCode("&")])
+        prefix, name, value = getContext(self, ctx)
+        return joinLineBreak([value, prefix, getAssignCode(name)])
 
     return decorate
 
@@ -146,12 +134,30 @@ def generateArrayCode(getContext):
 def generateOperationAssignCode(op):
     def decorate(getContext):
         def wrapper(self, ctx):
-            name, value = getContext(self, ctx)
-            return joinLineBreak(
-                [getPushCode(name, "%"), value, op,
-                 getAssignCode(name)])
+            prefix, name, value = getContext(self, ctx)
+            return joinLineBreak([
+                prefix,
+                getPushCode(name, "%"), value, op, prefix,
+                getAssignCode(name)
+            ])
 
         return wrapper
+
+    return decorate
+
+
+def generateCallArrayCode(getContext):
+    def decorate(self, ctx):
+        name, index = getContext(self, ctx)
+        return joinLineBreak([index, "index", getPushCode(name, "%")])
+
+    return decorate
+
+
+def generateArrayCode(getContext):
+    def decorate(self, ctx):
+        args, length = getContext(self, ctx)
+        return joinLineBreak(args + [getPushCode(length), "array"])
 
     return decorate
 
