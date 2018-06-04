@@ -57,7 +57,7 @@ class CodeGenerator(ImpmonVisitor):
         return stmts
 
     def visitEmptyStmt(self, ctx):
-        return self.visitChildren(ctx)
+        return ""
 
     def visitLabeledStmt(self, ctx):
         return self.visitChildren(ctx)

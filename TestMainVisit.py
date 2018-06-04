@@ -102,6 +102,36 @@ class TestMainVisit(unittest.TestCase):
                 if(2>1){
                     print 1;
                 }else{
+                    ;
+                }
+            }
+        """
+
+        answer = """
+            tag @main
+            tag @IF_CONDITION_0
+                push 2
+                push 1
+                gtn
+                jz @ELSE_BODY_0
+            tag @IF_BODY_0
+                push 1
+                print
+                jmp @END_IF_0
+            tag @ELSE_BODY_0
+            tag @END_IF_0
+        """
+
+        self.assertEqual(
+            self.removeWhiteSpace(self.generateCode(text)),
+            self.removeWhiteSpace(answer))
+
+    def testIfElse(self):
+        text = """
+            def main(){
+                if(2>1){
+                    print 1;
+                }else{
                     print 2;
                 }
             }
