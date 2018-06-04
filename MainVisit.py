@@ -33,14 +33,11 @@ class CodeGenerator(ImpmonVisitor):
     def visitImport_stmt(self, ctx):
         return self.visitChildren(ctx)
 
-    def visitTof_defs(self, ctx):
-        return self.visitChildren(ctx)
-
-    @generateDefuncCode
-    def visitDefunc(self, ctx):
-        name = ctx.name().getText()
-        body = self.visit(ctx.block())
-        return name, body
+    @generateTop_defsCode
+    def visitTop_defs(self, ctx):
+        # return self.visitChildren(ctx)
+        defuncs = [self.visit(defunc) for defunc in ctx.defunc()]
+        return defuncs
 
     def visitDefvar(self, ctx):
         return self.visitChildren(ctx)
@@ -131,8 +128,10 @@ class CodeGenerator(ImpmonVisitor):
     def visitGoto_stmt(self, ctx):
         return self.visitChildren(ctx)
 
+    @generateReturnStmtCode
     def visitReturn_stmt(self, ctx):
-        return self.visitChildren(ctx)
+        value = self.visit(ctx.expr())
+        return value
 
     @generatePrintCode
     def visitPrint_stmt(self, ctx):
@@ -235,8 +234,17 @@ class CodeGenerator(ImpmonVisitor):
         index = self.visit(ctx.expr())
         return name, index
 
+    @generateDefuncCode
+    def visitDefunc(self, ctx):
+        name = ctx.name().getText()
+        body = self.visit(ctx.block())
+        return name, body
+
+    @generateCallFuncCode
     def visitCallFunc(self, ctx):
-        return self.visitChildren(ctx)
+        name = ctx.term().getText()
+        args = self.visit(ctx.args())
+        return name, args
 
     @generateIntCode
     def visitInt(self, ctx):
@@ -275,8 +283,10 @@ class CodeGenerator(ImpmonVisitor):
     def visitSlot(self, ctx):
         return self.visitChildren(ctx)
 
+    @generateArgsCode
     def visitArgs(self, ctx):
-        return self.visitChildren(ctx)
+        args = [self.visit(expr) for expr in ctx.expr()]
+        return args
 
 
 def main(argv):

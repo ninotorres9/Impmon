@@ -1,7 +1,7 @@
 grammar Impmon;
 
 compilation_unit
-    : import_stmts tof_defs
+    : import_stmts top_defs
     ;
 
 import_stmts
@@ -11,7 +11,7 @@ import_stmt
     : 'import' name ('.'name)* ';'
     ;
 
-tof_defs
+top_defs
     : (defunc)*
     ;
 defunc

@@ -17,6 +17,10 @@ def joinLineBreak(strs):
     return "\n  ".join(strs)
 
 
+def getCallCode(name):
+    return "call @{name}".format(name=name)
+
+
 def getPushCode(value, prefix=""):
     return "push {prefix}{value}".format(prefix=prefix, value=value)
 
@@ -37,9 +41,18 @@ def getJumpCode(instruction, tag, number):
         instruction=instruction, tag=tag, number=number)
 
 
+def generateTop_defsCode(getContext):
+    def decorate(self, ctx):
+        defuncs = getContext(self, ctx)
+        return joinLineBreak(defuncs)
+
+    return decorate
+
+
 def generateStmtsCode(getStatements):
     def decorate(self, ctx):
-        return joinLineBreak(getStatements(self, ctx))
+        stmts = getStatements(self, ctx)
+        return joinLineBreak(stmts)
 
     return decorate
 
@@ -48,6 +61,14 @@ def generateDefuncCode(getContext):
     def decorate(self, ctx):
         name, body = getContext(self, ctx)
         return joinLineBreak([getTagCode(name), body])
+
+    return decorate
+
+
+def generateCallFuncCode(getContext):
+    def decorate(self, ctx):
+        name, args = getContext(self, ctx)
+        return joinLineBreak([getCallCode(name), args])
 
     return decorate
 
@@ -115,6 +136,14 @@ def generateBinaryCode(op):
     return decorate
 
 
+def generateReturnStmtCode(getContext):
+    def decorate(self, ctx):
+        value = getContext(self, ctx)
+        return joinLineBreak([value, "ret"])
+
+    return decorate
+
+
 def generatePrintCode(getContext):
     def decorate(self, ctx):
         value = getContext(self, ctx)
@@ -172,5 +201,13 @@ def generateIntCode(getValue):
 def generateIdenCode(getValue):
     def decorate(self, ctx):
         return getPushCode(getValue(self, ctx), "%")
+
+    return decorate
+
+
+def generateArgsCode(getContext):
+    def decorate(self, ctx):
+        args = getContext(self, ctx)
+        return joinLineBreak(args)
 
     return decorate
