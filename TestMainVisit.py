@@ -407,6 +407,36 @@ class TestMainVisit(unittest.TestCase):
             self.removeWhiteSpace(self.generateCode(text)),
             self.removeWhiteSpace(answer))
 
+    def testFunction_1(self):
+        text = """
+            def add(lhs, rhs){
+                return lhs + rhs;
+            }
+
+            def main(){
+                print add(2, 3);
+            }
+        """
+
+        answer = """
+            tag @add
+                assign %lhs
+                assign %rhs
+                push %lhs
+                push %rhs
+                add
+                ret
+            tag @main
+                push 3
+                push 2
+                call @add
+                print
+        """
+
+        self.assertEqual(
+            self.removeWhiteSpace(self.generateCode(text)),
+            self.removeWhiteSpace(answer))
+
 
 if __name__ == '__main__':
     unittest.main()

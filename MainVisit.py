@@ -237,13 +237,21 @@ class CodeGenerator(ImpmonVisitor):
     @generateDefuncCode
     def visitDefunc(self, ctx):
         name = ctx.name().getText()
+
+        # 判断是否有参数
+        if (ctx.params() is not None):
+            params = self.visit(ctx.params())
+        else:
+            params = ""
+
         body = self.visit(ctx.block())
-        return name, body
+        return name, params, body
 
     @generateCallFuncCode
     def visitCallFunc(self, ctx):
         name = ctx.term().getText()
-        args = self.visit(ctx.args())
+        # 倒置
+        args = [self.visit(each) for each in ctx.args().expr()][::-1]
         return name, args
 
     @generateIntCode
@@ -265,11 +273,15 @@ class CodeGenerator(ImpmonVisitor):
     def visitName(self, ctx):
         return self.visitChildren(ctx)
 
+    @generateParamsCode
     def visitParams(self, ctx):
-        return self.visitChildren(ctx)
+        params = [self.visit(param) for param in ctx.param()]
+        return params
 
+    @generateParamCode
     def visitParam(self, ctx):
-        return self.visitChildren(ctx)
+        name = ctx.name().getText()
+        return name
 
     def visitBlock(self, ctx):
         return self.visit(ctx.stmts())

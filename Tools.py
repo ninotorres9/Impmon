@@ -59,8 +59,8 @@ def generateStmtsCode(getStatements):
 
 def generateDefuncCode(getContext):
     def decorate(self, ctx):
-        name, body = getContext(self, ctx)
-        return joinLineBreak([getTagCode(name), body])
+        name, params, body = getContext(self, ctx)
+        return joinLineBreak([getTagCode(name), params, body])
 
     return decorate
 
@@ -68,7 +68,7 @@ def generateDefuncCode(getContext):
 def generateCallFuncCode(getContext):
     def decorate(self, ctx):
         name, args = getContext(self, ctx)
-        return joinLineBreak([getCallCode(name), args])
+        return joinLineBreak(args + [getCallCode(name)])
 
     return decorate
 
@@ -209,5 +209,21 @@ def generateArgsCode(getContext):
     def decorate(self, ctx):
         args = getContext(self, ctx)
         return joinLineBreak(args)
+
+    return decorate
+
+
+def generateParamsCode(getContext):
+    def decorate(self, ctx):
+        params = getContext(self, ctx)
+        return joinLineBreak(params)
+
+    return decorate
+
+
+def generateParamCode(getContext):
+    def decorate(self, ctx):
+        name = getContext(self, ctx)
+        return getAssignCode(name)
 
     return decorate
