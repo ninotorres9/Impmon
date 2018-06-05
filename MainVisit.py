@@ -6,7 +6,20 @@ from out.ImpmonListener import ImpmonListener
 from out.ImpmonVisitor import ImpmonVisitor
 from out.ImpmonParser import ImpmonParser
 from out.ImpmonLexer import ImpmonLexer
+from antlr4.error.ErrorListener import ErrorListener
 from Tools import *
+
+RUN = True
+
+
+class MyErrorListener(ErrorListener):
+    def __init__(self):
+        super(MyErrorListener, self).__init__()
+
+    def syntaxError(self, recognizer, offendingSymbol, line, column, msg, e):
+        global RUN
+        RUN = False
+        print("SyntaxError: line {line}, {msg}".format(line=line, msg=msg))
 
 
 class CodeGenerator(ImpmonVisitor):
@@ -304,17 +317,23 @@ class CodeGenerator(ImpmonVisitor):
 def main(argv):
     input = FileStream(argv[1])
     lexer = ImpmonLexer(input)
+    lexer._listeners = [MyErrorListener()]
     stream = CommonTokenStream(lexer)
     parser = ImpmonParser(stream)
-    tree = parser.compilation_unit()
+    parser._listeners = [MyErrorListener()]
 
+    tree = parser.compilation_unit()
     codeGenerator = CodeGenerator()
 
     # print(codeGenerator.visit(tree))
 
-    outfile = argv[2]
-    with open(outfile, "w") as output:
-        output.write(codeGenerator.visit(tree))
+    global RUN
+    if(RUN):
+        outfile = argv[2]
+        with open(outfile, "w") as output:
+            output.write(codeGenerator.visit(tree))
+    else:
+        pass
 
 
 if __name__ == '__main__':
