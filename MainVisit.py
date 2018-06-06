@@ -225,7 +225,7 @@ class CodeGenerator(ImpmonVisitor):
         return self.visitChildren(ctx)
 
     def visitPar(self, ctx):
-        return self.visitChildren(ctx)
+        return self.visit(ctx.expr())
 
     def visitDec(self, ctx):
         return self.visitChildren(ctx)

@@ -96,6 +96,25 @@ class TestMainVisit(unittest.TestCase):
             self.removeWhiteSpace(self.generateCode(text)),
             self.removeWhiteSpace(answer))
 
+    def testMultExpression(self):
+        text = """
+            def main(){
+                result = (1+1);
+            }
+        """
+
+        answer = """
+            tag @main
+                push 1
+                push 1
+                add
+                assign %result
+        """
+
+        self.assertEqual(
+            self.removeWhiteSpace(self.generateCode(text)),
+            self.removeWhiteSpace(answer))
+
     def testIf(self):
         text = """
             def main(){
