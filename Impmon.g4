@@ -35,7 +35,7 @@ stmt
     ;
 
 if_stmt
-    : 'if' '(' expr ')' stmt ('else' stmt)?
+    : 'if' '(' expr ')' stmt 'else' stmt
     ;
 while_stmt
     : 'while' '(' expr ')' stmt
