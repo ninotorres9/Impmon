@@ -43,8 +43,8 @@ def getJumpCode(instruction, tag, number):
 
 def generateTop_defsCode(getContext):
     def decorate(self, ctx):
-        defuncs = getContext(self, ctx)
-        return joinLineBreak(defuncs)
+        defs = getContext(self, ctx)
+        return joinLineBreak(defs)
 
     return decorate
 
@@ -53,6 +53,14 @@ def generateStmtsCode(getStatements):
     def decorate(self, ctx):
         stmts = getStatements(self, ctx)
         return joinLineBreak(stmts)
+
+    return decorate
+
+
+def generateDeclassCode(getContext):
+    def decorate(self, ctx):
+        name, body = getContext(self, ctx)
+        return joinLineBreak([getTagCode(name), body, "end_class"])
 
     return decorate
 
@@ -69,6 +77,14 @@ def generateCallFuncCode(getContext):
     def decorate(self, ctx):
         name, args = getContext(self, ctx)
         return joinLineBreak(args + [getCallCode(name)])
+
+    return decorate
+
+
+def generateCallMember(getContext):
+    def decorate(self, ctx):
+        name, member = getContext(self, ctx)
+        return getPushCode("{name}.{member}".format(name=name, member=member), "%")
 
     return decorate
 
@@ -148,6 +164,15 @@ def generatePrintCode(getContext):
     def decorate(self, ctx):
         value = getContext(self, ctx)
         return joinLineBreak([value, "print"])
+
+    return decorate
+
+
+def generateCreateclassCode(getContext):
+    def decorate(self, ctx):
+        classType, className = getContext(self, ctx)
+        return "create_class {type} {name}".format(
+            type=classType, name=className)
 
     return decorate
 

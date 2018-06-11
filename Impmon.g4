@@ -12,10 +12,13 @@ import_stmt
     ;
 
 top_defs
-    : (defunc)*
+    : (defunc | defclass)*
     ;
 defunc
     : 'def' name '(' (params)? ')' block
+    ;
+defclass
+    : 'class' name block
     ;
 
 // statements
@@ -32,6 +35,7 @@ stmt
     | for_stmt          #forStmt
     | return_stmt       #returnStmt
     | print_stmt        #printStmt
+    | create_class      #createClass
     ;
 
 if_stmt
@@ -48,6 +52,9 @@ return_stmt
     ;
 print_stmt
     : 'print' expr ';'
+    ;
+create_class
+    : name name ';'
     ;
 
 // expressions
@@ -86,6 +93,7 @@ term
     | term '--'                     #dec
     | term '[' expr ']'             #callArray
     | term '(' args ')'             #callFunc
+    | name '.' name                 #callMember 
     | '[' args ']'                  #array
     ;
 

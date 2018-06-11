@@ -1,0 +1,32 @@
+tag @main
+  
+  push 0
+  
+  assign %result
+  tag @FOR_INITIALIZATION_0
+  push 0
+  
+  assign %i
+  tag @FOR_CONDITION_0
+  push %i
+  push 10
+  neq
+  jz @END_FOR_0
+  tag @FOR_BODY_0
+  
+  push %result
+  push %i
+  add
+  
+  assign %result
+  tag @FOR_INCREMENT_0
+  
+  push %i
+  push 1
+  add
+  
+  assign %i
+  jmp @FOR_CONDITION_0
+  tag @END_FOR_0
+  push %result
+  print

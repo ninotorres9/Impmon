@@ -48,9 +48,9 @@ class CodeGenerator(ImpmonVisitor):
 
     @generateTop_defsCode
     def visitTop_defs(self, ctx):
-        # return self.visitChildren(ctx)
         defuncs = [self.visit(defunc) for defunc in ctx.defunc()]
-        return defuncs
+        defclasses = [self.visit(defclass) for defclass in ctx.defclass()]
+        return defclasses + defuncs
 
     def visitDefvar(self, ctx):
         return self.visitChildren(ctx)
@@ -58,8 +58,11 @@ class CodeGenerator(ImpmonVisitor):
     def visitDefarr(self, ctx):
         return self.visitChildren(ctx)
 
+    @generateDeclassCode
     def visitDefclass(self, ctx):
-        return self.visitChildren(ctx)
+        name = ctx.name().getText()
+        body = self.visit(ctx.block())
+        return name, body
 
     @generateStmtsCode
     def visitStmts(self, ctx):
@@ -149,6 +152,12 @@ class CodeGenerator(ImpmonVisitor):
     @generatePrintCode
     def visitPrint_stmt(self, ctx):
         return self.visit(ctx.expr())
+
+    @generateCreateclassCode
+    def visitCreate_class(self, ctx):
+        classType = ctx.name(0).getText()
+        className = ctx.name(1).getText()
+        return classType, className
 
     @generateAssignCode
     def visitAssign(self, ctx):
@@ -267,6 +276,12 @@ class CodeGenerator(ImpmonVisitor):
         args = [self.visit(each) for each in ctx.args().expr()][::-1]
         return name, args
 
+    @generateCallMember
+    def visitCallMember(self, ctx):
+        name = ctx.name(0).getText()
+        member = ctx.name(1).getText()
+        return name, member
+
     @generateIntCode
     def visitInt(self, ctx):
         return ctx.INTEGER().getText()
@@ -328,7 +343,7 @@ def main(argv):
     # print(codeGenerator.visit(tree))
 
     global RUN
-    if(RUN):
+    if (RUN):
         outfile = argv[2]
         with open(outfile, "w") as output:
             output.write(codeGenerator.visit(tree))
