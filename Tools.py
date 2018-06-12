@@ -84,7 +84,10 @@ def generateCallFuncCode(getContext):
 def generateCallMember(getContext):
     def decorate(self, ctx):
         name, member = getContext(self, ctx)
-        return getPushCode("{name}.{member}".format(name=name, member=member), "%")
+        return joinLineBreak([
+            getPushCode("{name}.{member}".format(name=name, member=member),
+                        "%")
+        ])
 
     return decorate
 
