@@ -52,17 +52,19 @@ class CodeGenerator(ImpmonVisitor):
         defclasses = [self.visit(defclass) for defclass in ctx.defclass()]
         return defclasses + defuncs
 
-    def visitDefvar(self, ctx):
-        return self.visitChildren(ctx)
-
-    def visitDefarr(self, ctx):
-        return self.visitChildren(ctx)
-
     @generateDeclassCode
     def visitDefclass(self, ctx):
         name = ctx.name().getText()
-        body = self.visit(ctx.block())
-        return name, body
+        variables = [self.visit(var) for var in ctx.defvar()]
+        funcs = [self.visit(func) for func in ctx.defunc()]
+        funcnames = [func.name().getText() for func in ctx.defunc()]
+        return name, variables, funcs, funcnames
+
+    @generateAssignCode
+    def visitDefvar(self, ctx):
+        name = ctx.name().getText()
+        value = self.visit(ctx.expr())
+        return "", name, value
 
     @generateStmtsCode
     def visitStmts(self, ctx):

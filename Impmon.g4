@@ -18,7 +18,10 @@ defunc
     : 'def' name '(' (params)? ')' block
     ;
 defclass
-    : 'class' name block
+    : 'class' name '{' defvar* defunc* '}'
+    ;
+defvar
+    : name '=' expr ';'
     ;
 
 // statements

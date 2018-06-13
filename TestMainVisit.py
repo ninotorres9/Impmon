@@ -483,6 +483,41 @@ class TestMainVisit(unittest.TestCase):
             self.removeWhiteSpace(self.generateCode(text)),
             self.removeWhiteSpace(answer))
 
+    def testClass_1(self):
+        text = """
+            class Person{
+                id = 15;
+                def showID(){
+                    print id;
+                }
+            }
+
+            def main(){
+                Person person;
+                person.showID();
+            }
+        """
+
+        answer = """
+            tag @Person
+                push 15
+                assign %id
+                bind @showID
+                end_class
+            tag @showID
+                push %id
+                print
+                ret
+            tag @main
+                create_class Person person
+                call @person.showID
+            
+        """
+
+        self.assertEqual(
+            self.removeWhiteSpace(self.generateCode(text)),
+            self.removeWhiteSpace(answer))
+
 
 if __name__ == '__main__':
     unittest.main()

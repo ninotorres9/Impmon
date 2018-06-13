@@ -57,10 +57,17 @@ def generateStmtsCode(getStatements):
     return decorate
 
 
+def getBindCode(funcname):
+    return "bind @{funcname}".format(funcname=funcname)
+
+
 def generateDeclassCode(getContext):
     def decorate(self, ctx):
-        name, body = getContext(self, ctx)
-        return joinLineBreak([getTagCode(name), body, "end_class"])
+        name, variables, funcs, functionNames = getContext(self, ctx)
+        return joinLineBreak(
+            [getTagCode(name)] + variables +
+            [getBindCode(funcname)
+             for funcname in functionNames] + ["end_class"] + funcs)
 
     return decorate
 
@@ -68,7 +75,10 @@ def generateDeclassCode(getContext):
 def generateDefuncCode(getContext):
     def decorate(self, ctx):
         name, params, body = getContext(self, ctx)
-        return joinLineBreak([getTagCode(name), params, body])
+        if (name == 'main'):
+            return joinLineBreak([getTagCode(name), params, body])
+        else:
+            return joinLineBreak([getTagCode(name), params, body, "ret"])
 
     return decorate
 
@@ -158,7 +168,7 @@ def generateBinaryCode(op):
 def generateReturnStmtCode(getContext):
     def decorate(self, ctx):
         value = getContext(self, ctx)
-        return joinLineBreak([value, "ret"])
+        return joinLineBreak([value])
 
     return decorate
 
